@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburger Menu</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Basic reset for consistent box sizing */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif; /* Add a default font */
+            /* Add some dummy content to test scrolling */
+            min-height: 200vh;
+            background-color: #f0f0f0;
+        }
+
+        /* Hamburger Button Styling */
+        .hamburger {
+            position: fixed; /* Keep button in place on scroll */
+            z-index: 101; /* Ensure button is above the menu */
+            top: 1rem; /* Position from the top */
+            right: 1rem; /* Position from the right */
+            padding: 8px; /* Comfortable padding */
+            border: 1px solid black;
+            background: white;
+            cursor: pointer;
+            display: flex; /* Use flex to manage icons inside */
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px; /* Slightly rounded corners */
+        }
+
+        /* Class to hide elements (used for icons) */
+        .hidden {
+            display: none;
+        }
+
+        /* Menu Styling */
+        .slide-in-menu { /* Renamed for clarity */
+            position: fixed;
+            transition: transform 0.3s ease-in-out; /* Smoother transition */
+            top: 0;
+            left: 0;
+            width: 100%; /* Use width instead of left/right */
+            height: 100vh; /* Full viewport height */
+            z-index: 100; /* Below the hamburger button */
+            background: rgba(0, 0, 0, 0.9); /* Slightly transparent black */
+            color: white;
+            list-style: none;
+            padding: 6rem 2rem 2rem; /* Adjust padding (top padding avoids button) */
+            /* Start fully translated (hidden) */
+            transform: translateX(100%); /* Slide in from the right */
+            display: flex; /* Use flexbox for menu items */
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items horizontally */
+            gap: 1.5rem; /* Space between menu items */
+        }
+
+        /* State when the menu is shown */
+        .slide-in-menu.showMenu {
+            transform: translateX(0); /* Slide into view */
+        }
+
+        /* Menu Item Styling */
+        .slide-in-menu li {
+            width: 100%;
+            text-align: center;
+        }
+
+        .slide-in-menu .item {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem; /* Larger font size */
+            padding: 0.5rem 1rem;
+            display: block; /* Make the whole area clickable */
+            transition: background-color 0.2s; /* Hover effect */
+            border-radius: 4px;
+        }
+
+        .slide-in-menu .item:hover,
+        .slide-in-menu .item:focus {
+            background-color: rgba(255, 255, 255, 0.2); /* Subtle hover */
+            outline: none; /* Remove default focus outline */
+        }
+
+    </style>
+</head>
+<body>
+    <ul class="slide-in-menu" id="mobile-menu">
+        <li><a class="item" href="#">Home</a></li>
+        <li><a class="item" href="#">Profile</a></li>
+        <li><a class="item" href="#">About</a></li>
+        <li><a class="item" href="#">Contacts</a></li>
+    </ul>
+
+    <button class="hamburger" aria-label="Toggle menu" aria-controls="mobile-menu" aria-expanded="false">
+        <i class="menuIcon material-icons">menu</i>
+        <i class="closeIcon material-icons hidden">close</i>
+    </button>
+
+    <script>
+        // Wait for the DOM to be fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', () => {
+            // Select DOM elements
+            const menu = document.querySelector('.slide-in-menu'); // Renamed variable
+            const menuItems = document.querySelectorAll('.item');
+            const hamburgerBtn = document.querySelector('.hamburger'); // Renamed variable
+            const closeIcon = document.querySelector('.closeIcon');
+            const menuIcon = document.querySelector('.menuIcon');
+
+            // Function to toggle the menu visibility
+            function toggleMenu() {
+                const isMenuOpen = menu.classList.contains("showMenu");
+
+                if (isMenuOpen) {
+                    // Close the menu
+                    menu.classList.remove("showMenu");
+                    closeIcon.classList.add("hidden"); // Hide close icon
+                    menuIcon.classList.remove("hidden"); // Show menu icon
+                    hamburgerBtn.setAttribute("aria-expanded", "false"); // Update ARIA state
+                } else {
+                    // Open the menu
+                    menu.classList.add("showMenu");
+                    closeIcon.classList.remove("hidden"); // Show close icon
+                    menuIcon.classList.add("hidden"); // Hide menu icon
+                    hamburgerBtn.setAttribute("aria-expanded", "true"); // Update ARIA state
+                }
+            }
+
+            // Add click listener to the hamburger button
+            hamburgerBtn.addEventListener("click", toggleMenu);
+
+            // Add click listeners to each menu item to close the menu
+            menuItems.forEach(menuItem => {
+                menuItem.addEventListener("click", () => {
+                    // Only close if the menu is currently open
+                    if (menu.classList.contains("showMenu")) {
+                         toggleMenu(); // Reuse toggleMenu to close it
+                    }
+                    // Note: If your links navigate away, the menu will disappear anyway.
+                    // This ensures it closes if the links are same-page anchors (#).
+                });
+            });
+        });
+    </script>
+</body>
+</html>
